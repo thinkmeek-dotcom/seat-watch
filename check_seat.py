@@ -9,6 +9,8 @@ a different class.
 import http.cookiejar
 import json
 import os
+import ssl
+import subprocess
 import sys
 import time
 import urllib.parse
@@ -46,9 +48,29 @@ def notify(title, message, priority="high", tags="tada"):
     print("Notification sent:", title, "-", message)
 
 
+def lanier_ssl_context():
+    """Lanier's server leaves out part of its certificate chain. Browsers fill
+    the gap automatically; this does the same for Python using the 'aia' library."""
+    try:
+        import aia
+    except ImportError:
+        subprocess.run([sys.executable, "-m", "pip", "install", "-q", "aia"], check=True)
+        import aia
+    try:
+        return aia.AIASession().ssl_context_from_url(BASE + "/registration/registration")
+    except Exception as err:
+        # Seat counts are public and no login is sent, so as a last resort,
+        # read them without certificate checking rather than miss a seat.
+        print("Certificate fill-in failed (" + str(err)[:100] + "); continuing without it.")
+        return ssl._create_unverified_context()
+
+
 def get_section():
     jar = http.cookiejar.CookieJar()
-    opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(jar))
+    opener = urllib.request.build_opener(
+        urllib.request.HTTPCookieProcessor(jar),
+        urllib.request.HTTPSHandler(context=lanier_ssl_context()),
+    )
     opener.addheaders = [("User-Agent", "Mozilla/5.0 (personal class seat check)")]
 
     def fetch(path, form=None):
