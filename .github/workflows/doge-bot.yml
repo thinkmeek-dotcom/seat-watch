@@ -1,0 +1,40 @@
+name: Doge paper bot
+
+on:
+  schedule:
+    - cron: "7,22,37,52 * * * *"   # every 15 minutes
+  workflow_dispatch:
+    inputs:
+      test:
+        description: "Send the leaderboard to my phone now"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: doge-bot
+  cancel-in-progress: false
+
+jobs:
+  trade:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Make pretend trades
+        run: python doge_bot.py
+        env:
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+          TEST_SUMMARY: ${{ inputs.test }}
+      - name: Save results
+        run: |
+          git config user.name "doge-bot"
+          git config user.email "doge-bot@users.noreply.github.com"
+          git add doge_state.json doge_history.csv
+          git diff --cached --quiet || git commit -m "Doge bot update"
+          git pull --rebase
+          git push
