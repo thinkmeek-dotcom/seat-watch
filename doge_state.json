@@ -1,0 +1,41 @@
+{
+ "started": "2026-10-11 20:19",
+ "wallets": {
+  "hold": {
+   "cash": 0.0,
+   "doge": 1147.834112014766,
+   "ref": 0.086685,
+   "signal": null,
+   "trades": 1
+  },
+  "dip": {
+   "cash": 100.0,
+   "doge": 0.0,
+   "ref": 0.086685,
+   "signal": null,
+   "trades": 0
+  },
+  "ma": {
+   "cash": 100.0,
+   "doge": 0.0,
+   "ref": null,
+   "signal": null,
+   "trades": 0
+  },
+  "coin": {
+   "cash": 95.0,
+   "doge": 57.391705600738305,
+   "ref": 0.086685,
+   "signal": null,
+   "trades": 1
+  }
+ },
+ "prices": [
+  0.086685
+ ],
+ "log": [
+  "2026-10-11 20:19 hold: BUY $100.00 at $0.08668",
+  "2026-10-11 20:19 coin: BUY $5.00 at $0.08668"
+ ],
+ "last_summary": ""
+}
